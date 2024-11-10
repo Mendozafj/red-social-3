@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publicaciones de <%= user.name %>
+  </title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Publicaciones de <%= user.name %>
+    </h1>
+
+    <div class="posts-list">
+      <% if (posts && posts.length> 0) { %>
+        <% posts.forEach(post=> { %>
+          <div class="post">
+            <h2>
+              <%= post.title %>
+            </h2>
+            <p>
+              <%= post.description %>
+            </p>
+            <% if (post.url_multimedia) { %>
+              <img src="<%= post.url_multimedia %>" alt="Multimedia de <%= post.title %>" class="post-image">
+              <% } %>
+                <small>Publicado por: <%= user.username %></small>
+                <div class="post-actions">
+                  <form action="/posts/<%= post.id %>/edit" method="GET" style="display:inline;">
+                    <button type="submit" class="edit-button">Editar</button>
+                  </form>
+                  <form action="/posts/<%= post.id %>?_method=DELETE" method="POST" style="display:inline;">
+                    <button type="submit" class="delete-button">Eliminar</button>
+                  </form>
+                </div>
+
+          </div>
+          <% }); %>
+            <% } else { %>
+              <p class="no-posts">No hay publicaciones disponibles.</p>
+              <% } %>
+    </div>
+
+    <h2>Crear Nueva Publicación</h2>
+    <form action="/posts" method="POST">
+      <label for="title">Título:</label>
+      <input type="text" id="title" name="title" required>
+
+      <label for="description">Descripción:</label>
+      <textarea id="description" name="description" required></textarea>
+
+      <label for="url_multimedia">URL Multimedia:</label>
+      <input type="text" id="url_multimedia" name="url_multimedia">
+
+      <input type="hidden" name="user_id" value="<%= user.id %>">
+      <button type="submit">Publicar</button>
+    </form>
+
+    <!-- Botón para volver atrás -->
+    <button onclick="window.history.back();" style="margin-bottom: 20px;">Volver Atrás</button>
+  </div>
+</body>
+
+</html>

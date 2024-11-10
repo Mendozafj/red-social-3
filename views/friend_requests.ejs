@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solicitudes de Amistad</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Solicitudes de Amistad de <%= user.name %>
+    </h1>
+
+    <!-- Lista de solicitudes de amistad -->
+    <div class="friend-requests-list">
+      <% if (friendRequests && friendRequests.length> 0) { %>
+        <% friendRequests.forEach(request=> { %>
+          <div class="friend-request">
+            <p>Solicitud de amistad de: <strong>
+                <%= request.sender_username %>
+              </strong></p>
+            <div class="request-actions">
+              <!-- Formulario para aceptar la solicitud -->
+              <form action="/friend-request/<%= request.id %>?_method=PUT" method="POST" style="display:inline;">
+                <input type="hidden" id="status" name="status" value="aceptada"> <!-- Envía "aceptada" como estado -->
+                <button type="submit">Aceptar</button>
+              </form>
+              <!-- Formulario para rechazar la solicitud -->
+              <form action="/friend-request/<%= request.id %>?_method=PUT" method="POST" style="display:inline;">
+                <input type="hidden" id="status" name="status" value="rechazada"> <!-- Envía "rechazada" como estado -->
+                <button type="submit" class="delete-button">Rechazar</button>
+              </form>
+
+            </div>
+          </div>
+          <% }); %>
+            <% } else { %>
+              <p class="no-requests">No hay solicitudes de amistad pendientes.</p>
+              <% } %>
+    </div>
+
+    <!-- Formulario para enviar una nueva solicitud de amistad -->
+    <h2>Enviar Nueva Solicitud de Amistad</h2>
+    <form action="/friend-request" method="POST">
+      <label for="receiverId">Selecciona un Usuario:</label>
+      <input type="hidden" name="sender_id" value="<%= user.id %>">
+      <select id="receiver_id" name="receiver_id" required>
+        <option value="" disabled selected>Seleccione un usuario</option>
+        <% users.forEach(u=> { %>
+          <option value="<%= u.id %>">
+            <%= u.username %>
+          </option>
+          <% }); %>
+      </select>
+
+      <button type="submit">Enviar Solicitud</button>
+    </form>
+    <!-- Botón para volver atrás -->
+    <button onclick="window.history.back();" style="margin-bottom: 20px;">Volver Atrás</button>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amigos de <%= user.name %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1>Amigos de <%= user.name %>
+  </h1>
+  <ul>
+    <% if (friends && friends.length> 0) { %>
+      <% friends.forEach(friend=> { %>
+        <li>
+          <%= friend.name %> (<%= friend.username %>)
+        </li>
+        <% }); %>
+          <% } else { %>
+            <li>No hay amigos.</li>
+            <% } %>
+  </ul>
+
+  <!-- Botón para volver atrás -->
+  <button onclick="window.history.back();" style="margin-bottom: 20px;">Volver Atrás</button>
+
+</body>
+
+</html>

@@ -1,0 +1,219 @@
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  width: 80%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Títulos */
+h1, h2 {
+  color: #374151; /* Gris oscuro */
+  text-align: center;
+}
+
+h2 {
+  color: #3b82f6; /* Azul medio */
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+/* Listas */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+li {
+  padding: 12px;
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+}
+
+li:hover {
+  background-color: #e7f1ff; /* Azul claro al hacer hover */
+}
+
+/* Enlaces */
+a {
+  color: #3b82f6; /* Azul medio */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Publicaciones */
+.post {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.post-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+small {
+  display: block;
+  color: #777;
+  margin-top: 10px;
+}
+
+/* Mensajes */
+.no-posts,
+.no-requests {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  margin: 20px 0;
+}
+
+/* Formulario de edición y creación */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+input[type="text"],
+textarea,
+select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button[type="submit"] {
+  margin-top: 15px;
+  padding: 10px 20px;
+  /* background-color: #3b82f6; */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* button[type="submit"]:hover {
+  background-color: #2563eb;
+} */
+
+/* Contenedor de las acciones de publicación */
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espacio entre los elementos */
+  margin-top: 15px;
+}
+
+.edit-button,
+.delete-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #fff;
+}
+
+button {
+  background-color: #3b82f6; /* Color para el botón de editar */
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+.delete-button {
+  background-color: #d0342d; /* Color para el botón de eliminar */
+}
+
+.delete-button:hover {
+  background-color: #a02b22;
+}
+
+.post-actions form {
+  display: inline;
+}
+
+/* Botón de volver */
+button[onclick="window.history.back();"] {
+  margin-top: 20px;
+  padding: 8px 16px;
+  background-color: #374151;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[onclick="window.history.back();"]:hover {
+  background-color: #1f2937;
+}
+
+/* Solicitudes de amistad */
+.friend-request {
+  background-color: #f9f9f9;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.request-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.request-actions button {
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+
+.request-actions button[type="submit"][value="rechazada"] {
+  background-color: #d0342d;
+}
+
+.request-actions button[type="submit"][value="rechazada"]:hover {
+  background-color: #a02b22;
+}
+
+/* Lista de Usuarios */
+.user-list a {
+  font-weight: bold;
+}
