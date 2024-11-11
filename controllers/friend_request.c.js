@@ -24,6 +24,18 @@ class FriendRequestController {
         return { error: `Los usuarios deben ser diferentes` };
       }
 
+      // Verificar si ya son amigos
+      const friends1 = await friendshipsModel.showByUserID(sender_id);
+      if (friends1.includes(receiver_id)) {
+        return { error: "Ya son amigos." };
+      }
+
+      // Verificar si la solicitud ya existe
+      const existingRequest = await friendRequestModel.showBySenderReceiver(sender_id, receiver_id);
+      if (existingRequest) {
+        return { error: "Ya existe una solicitud de amistad." };
+      }
+
       const newFriendRequest = { sender_id, receiver_id, status: "pendiente" };
       await friendRequestModel.create(newFriendRequest);
 

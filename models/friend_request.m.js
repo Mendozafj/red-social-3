@@ -5,7 +5,7 @@ class FriendRequestsModel {
   // Método para crear una nueva solicitud de amistad
   async create(friendRequest) {
     return new Promise((resolve, reject) => {
-      friendRequest.id = uuidv4(); 
+      friendRequest.id = uuidv4();
       const query = 'INSERT INTO friend_requests (id, sender_id, receiver_id, status, created_at) VALUES (?, ?, ?, ?, ?)';
       const values = [friendRequest.id, friendRequest.sender_id, friendRequest.receiver_id, friendRequest.status, new Date()];
 
@@ -44,6 +44,17 @@ class FriendRequestsModel {
 
       pool.query(query, [receiver_id])
         .then(([rows]) => resolve(rows))
+        .catch(error => reject(error));
+    });
+  }
+
+  // Método para mostrar una solicitud de amistad entre dos usuarios
+  async showBySenderReceiver(sender_id, receiver_id) {
+    return new Promise((resolve, reject) => {
+      const query = 'SELECT * FROM friend_requests WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)';
+
+      pool.query(query, [sender_id, receiver_id, receiver_id, sender_id])
+        .then(([rows]) => resolve(rows[0]))
         .catch(error => reject(error));
     });
   }

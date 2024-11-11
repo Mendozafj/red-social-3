@@ -4,14 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editar Publicación</title>
+  <title>Perfil de <%= user.name %> @<%= user.username %>
+  </title>
   <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 
 <body>
   <div class="container">
     <header>
-      <h1>Perfil de <%= user.name %> (@<%= user.username %>)</h1>
+      <h1>Perfil de <%= user.name %> @<%= user.username %>
+      </h1>
       <p>Email: <%= user.email %>
       </p>
       <button onclick="window.location.href='/auth/logout'" class="delete-button">Cerrar sesión</button>
@@ -58,12 +60,23 @@
                           <p>
                             <%= comment.content %>
                           </p>
+                          <!-- Botones de editar y eliminar -->
+                          <button class="edit-button"
+                            onclick="editComment('<%= comment.id %>', '<%= comment.content %>')">Editar</button>
+                          <button class="delete-button" onclick="deleteComment('<%= comment.id %>')">Eliminar</button>
                         </li>
                         <% }) %>
                     </ul>
                     <% } else { %>
                       <p class="no-comments">No hay comentarios en esta publicación.</p>
                       <% } %>
+
+                        <form id="commentForm-<%= post.id %>">
+                          <input type="hidden" name="post_id" value="<%= post.id %>">
+                          <input type="hidden" name="user_id" value="<%= user.id %>">
+                          <textarea name="content" placeholder="Escribe tu comentario" required></textarea>
+                          <button type="submit">Comentar</button>
+                        </form>
                 </div>
           </li>
           <% }) %>
@@ -71,6 +84,8 @@
       <% } else { %>
         <p class="no-posts">Este usuario no tiene publicaciones.</p>
         <% } %>
+
+
   </div>
 
   <!-- Modal para eliminar publicación -->
@@ -253,6 +268,84 @@
           }
         })
         .catch(error => alert(error.message));
+    }
+
+    // Función para manejar el envío de comentarios
+    document.querySelectorAll('form[id^="commentForm-"]').forEach(form => {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault(); // Evita que se recargue la página por defecto
+
+        // Crear un objeto con los datos del formulario
+        const formData = new FormData(form);
+        const commentData = {
+          post_id: formData.get('post_id'),
+          user_id: formData.get('user_id'),
+          content: formData.get('content')
+        };
+
+        // Enviar el comentario usando Fetch API con el objeto JSON
+        fetch('/comments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(commentData) // Enviar el objeto como JSON
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Si el comentario se agregó con éxito, recargar la página
+              window.location.reload();
+            } else {
+              alert('Error al crear el comentario');
+            }
+          })
+          .catch(err => {
+            alert('Error al enviar el comentario');
+          });
+      });
+    });
+
+    // Función para editar comentario
+    function editComment(commentId, currentContent) {
+      const newContent = prompt("Edita tu comentario:", currentContent);
+      if (newContent !== null && newContent !== currentContent) {
+        fetch(`/comments/${commentId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content: newContent })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              window.location.reload();
+            } else {
+              alert('Error al editar el comentario');
+            }
+          })
+          .catch(err => alert('No puedes actualizar el comentario'));
+      }
+    }
+
+    // Función para eliminar comentario
+    function deleteComment(commentId) {
+      if (confirm("¿Estás seguro de que deseas eliminar este comentario?")) {
+        fetch(`/comments/${commentId}`, {
+          method: 'DELETE',
+
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              window.location.reload();
+            } else {
+              alert('No puedes eliminar el comentario');
+            }
+          })
+          .catch(err => alert('No puedes eliminar el comentario'));
+      }
     }
 
   </script>

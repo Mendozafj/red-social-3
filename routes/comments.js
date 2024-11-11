@@ -8,13 +8,14 @@ router.post('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res)
   try {
     const result = await commentsController.create(req.body);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).json({ success: false, error: result.error });
     }
-    return res.status(201).send("Comentario creado");
+    return res.json({ success: true });
   } catch (error) {
-    res.status(500).send("Error al crear el comentario");
+    res.status(500).json({ success: false, error: "Error al crear el comentario" });
   }
 });
+
 
 /* GET mostrar comentarios. */
 router.get('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
@@ -43,12 +44,12 @@ router.get('/:id', verifyToken, verifyRole(['usuario', 'admin']), async (req, re
 router.put('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const result = await commentsController.update(req.params.id, req.body);
-    if (result.error) {
-      return res.status(400).send(result.error);
+    if (!result.success) {
+      return res.status(400).json({ success: false, error: result.message });
     }
-    res.status(200).send(result);
+    return res.json({ success: true, message: result.message });
   } catch (err) {
-    res.status(500).send(`Error al editar el comentario: ${err}`);
+    res.status(500).json({ success: false, error: `Error al editar el comentario: ${err}` });
   }
 });
 
@@ -56,12 +57,12 @@ router.put('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
 router.delete('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const result = await commentsController.delete(req.params.id);
-    if (result.error) {
-      return res.status(400).send(result.error);
+    if (!result.success) {
+      return res.status(400).json({ success: false, error: result.message });
     }
-    res.status(200).send("Comentario eliminado")
+    return res.json({ success: true, message: result.message });
   } catch (err) {
-    res.status(500).send(`Error al eliminar comentario: ${err}`);
+    res.status(500).json({ success: false, error: `Error al eliminar comentario: ${err}` });
   }
 });
 

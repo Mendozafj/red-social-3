@@ -303,3 +303,40 @@ button[type="submit"]:hover {
   text-decoration: none;
   cursor: pointer;
 }
+
+/* Estilos para los botones de autenticación */
+.auth-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.login-button {
+  background-color: #3b82f6;
+  /* Azul */
+}
+
+.login-button:hover {
+  background-color: #2563eb;
+}
+
+.register-button {
+  background-color: #14a745;
+  /* Verde */
+}
+
+.register-button:hover {
+  background-color: rgb(16, 136, 56);
+}
