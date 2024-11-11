@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Publicación</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Perfil de <%= user.name %> (@<%= user.username %>)</h1>
+      <p>Email: <%= user.email %>
+      </p>
+    </header>
+
+    <h2>Publicaciones</h2>
+
+    <button class="create-button" onclick="openCreatePostModal()">Crear Nueva Publicación</button>
+    <button class="" onclick="window.history.back();">Volver</button>
+
+
+    <% if (posts && posts.length> 0) { %>
+      <ul>
+        <% posts.forEach(post=> { %>
+          <li class="post">
+            <% if (post.url_multimedia) { %>
+              <img class="post-image" src="<%= post.url_multimedia %>" alt="Imagen de la publicación">
+              <% } %>
+
+                <h3>
+                  <%= post.title %>
+                </h3>
+                <small>Publicado el <%= post.formatted_date %></small>
+                <p>
+                  <%= post.description %>
+                </p>
+
+                <div class="post-actions">
+                  <button class="edit-button"
+                    onclick="openModal('<%= post.id %>', '<%= post.title %>', '<%= post.description %>', '<%= post.url_multimedia %>')">Editar</button>
+                  <button class="delete-button" onclick="openDeleteModal('<%= post.id %>')">Eliminar</button>
+                </div>
+
+                <div class="comments">
+                  <h4>Comentarios</h4>
+                  <% if (post.comments && post.comments.length> 0) { %>
+                    <ul>
+                      <% post.comments.forEach(comment=> { %>
+                        <li class="comment">
+                          <small><strong>
+                              <%= comment.user_name %>
+                            </strong> comentó el <%= comment.formatted_date %>:</small>
+                          <p>
+                            <%= comment.content %>
+                          </p>
+                        </li>
+                        <% }) %>
+                    </ul>
+                    <% } else { %>
+                      <p class="no-comments">No hay comentarios en esta publicación.</p>
+                      <% } %>
+                </div>
+          </li>
+          <% }) %>
+      </ul>
+      <% } else { %>
+        <p class="no-posts">Este usuario no tiene publicaciones.</p>
+        <% } %>
+  </div>
+
+  <!-- Modal para eliminar publicación -->
+  <div id="deletePostModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeDeleteModal()">&times;</span>
+      <h2>¿Estás seguro de eliminar esta publicación?</h2>
+      <p>Esta acción no se puede deshacer.</p>
+      <button id="confirmDeleteButton" class="delete-button">Eliminar</button>
+      <button class="edit-button" onclick="closeDeleteModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Modal para crear publicación -->
+  <div id="createPostModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCreatePostModal()">&times;</span>
+      <h2>Crear Nueva Publicación</h2>
+      <form id="createPostForm" action="/posts" method="POST">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Descripción:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="url_multimedia">URL Multimedia:</label>
+        <input type="text" id="url_multimedia" name="url_multimedia">
+
+        <input type="hidden" name="user_id" value="<%= user.id %>">
+
+        <button type="submit">Publicar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para editar publicación -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Editar Publicación</h2>
+      <form id="editForm">
+        <label for="title">Título:</label>
+        <input type="text" id="title_" name="title" required>
+
+        <label for="description">Descripción:</label>
+        <textarea id="description_" name="description" required></textarea>
+
+        <label for="url_multimedia">URL Multimedia:</label>
+        <input type="text" id="url_multimedia_" name="url_multimedia">
+
+        <button class="edit-button" type="button" onclick="editPost()">Actualizar Publicación</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+
+
+    let postToDelete = null;
+
+    // Función para abrir el modal de confirmación de eliminación
+    function openDeleteModal(postId) {
+      postToDelete = postId;
+      document.getElementById('deletePostModal').style.display = 'block';
+    }
+
+    // Función para cerrar el modal de confirmación de eliminación
+    function closeDeleteModal() {
+      postToDelete = null;
+      document.getElementById('deletePostModal').style.display = 'none';
+    }
+
+    // Función para eliminar la publicación
+    document.getElementById('confirmDeleteButton').addEventListener('click', function () {
+      if (postToDelete) {
+        fetch(`/posts/${postToDelete}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' }
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Publicación eliminada exitosamente.');
+              window.location.reload();
+            } else {
+              alert(data.error || 'Error al eliminar la publicación.');
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+      closeDeleteModal();
+    });
+
+    // Función para abrir el modal de creación de publicación
+    function openCreatePostModal() {
+      document.getElementById('createPostModal').style.display = 'block';
+    }
+
+    // Función para cerrar el modal de creación de publicación
+    function closeCreatePostModal() {
+      document.getElementById('createPostModal').style.display = 'none';
+    }
+
+    // Función para abrir el modal y cargar los datos del post
+    function openModal(postId, title, description, url_multimedia) {
+      document.getElementById('editForm').setAttribute('data-post-id', postId);
+      document.getElementById('title_').value = title;
+      document.getElementById('description_').value = description;
+      document.getElementById('url_multimedia_').value = url_multimedia;
+      document.getElementById('editModal').style.display = 'block';
+    }
+
+    // Función para cerrar el modal
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    // Función para crear una nueva publicación
+    document.getElementById('createPostForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const url_multimedia = document.getElementById('url_multimedia').value;
+
+      fetch('/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, url_multimedia, user_id: '<%= user.id %>' })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Publicación creada exitosamente.');
+            window.location.reload();
+          } else {
+            alert(data.error || 'Error al crear la publicación.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Función para enviar la actualización de la publicación
+    function editPost() {
+      const postId = document.getElementById('editForm').getAttribute('data-post-id');
+      const title = document.getElementById('title_').value;
+      const description = document.getElementById('description_').value;
+      const url_multimedia = document.getElementById('url_multimedia_').value;
+
+      fetch(`/posts/${postId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, url_multimedia })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Publicación actualizada exitosamente.');
+            window.location.href = data.redirectUrl;
+          } else {
+            alert(data.error || 'Error al actualizar la publicación.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  </script>
+
+
+</body>
+
+</html>

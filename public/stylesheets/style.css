@@ -73,6 +73,9 @@ a:hover {
 }
 
 .post-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   max-width: 100%;
   height: auto;
   border-radius: 5px;
@@ -129,9 +132,9 @@ button[type="submit"] {
   font-size: 1rem;
 }
 
-/* button[type="submit"]:hover {
+button[type="submit"]:hover {
   background-color: #2563eb;
-} */
+}
 
 /* Contenedor de las acciones de publicación */
 .post-actions {
@@ -143,8 +146,9 @@ button[type="submit"] {
 }
 
 .edit-button,
-.delete-button {
-  padding: 5px 10px;
+.delete-button,
+.create-button {
+  padding: 10px 10px;
   border: none;
   border-radius: 3px;
   font-size: 0.9rem;
@@ -152,12 +156,12 @@ button[type="submit"] {
   color: #fff;
 }
 
-button {
+.edit-button {
   background-color: #3b82f6;
   /* Color para el botón de editar */
 }
 
-button:hover {
+.edit-button:hover {
   background-color: #2563eb;
 }
 
@@ -168,6 +172,15 @@ button:hover {
 
 .delete-button:hover {
   background-color: #a02b22;
+}
+
+
+.create-button {
+  background-color: #14a745;
+}
+
+.create-button:hover {
+  background-color: rgb(16, 136, 56);
 }
 
 .post-actions form {
@@ -255,11 +268,38 @@ button[type="submit"]:hover {
   background-color: #2563eb;
 }
 
-.post-image {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-  /* Esto centra la imagen horizontalmente */
-  border-radius: 5px;
+/* Estilos para el modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 600px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }

@@ -4,19 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amigos de <%= user.name %>
+  <title>Amigos de <%= user.name %> @<%= user.username %>
   </title>
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 
 <body>
-  <h1>Amigos de <%= user.name %>
+  <h1>Amigos de <%= user.name %> @<%= user.username %>
   </h1>
   <ul>
     <% if (friends && friends.length> 0) { %>
       <% friends.forEach(friend=> { %>
         <li>
-          <%= friend.name %> (<%= friend.username %>)
+          <%= friend.name %> @(<%= friend.username %>)
         </li>
         <% }); %>
           <% } else { %>

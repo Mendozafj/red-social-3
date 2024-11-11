@@ -12,7 +12,8 @@
   <div class="container">
     <h1>Editar Publicación</h1>
 
-    <form action="/posts/<%= post.id %>?_method=PUT" method="POST"> <!-- Usa method-override -->
+    <!-- Formulario para editar la publicación -->
+    <form id="editForm">
       <label for="title">Título:</label>
       <input type="text" id="title" name="title" value="<%= post.title %>" required>
 
@@ -22,13 +23,47 @@
       <label for="url_multimedia">URL Multimedia:</label>
       <input type="text" id="url_multimedia" name="url_multimedia" value="<%= post.url_multimedia %>">
 
-      <button type="submit">Actualizar Publicación</button>
+      <button type="button" onclick="editPost('<%= post.id %>')">Actualizar Publicación</button>
     </form>
 
+    <!-- Botón de Cancelar para regresar a la página anterior -->
     <div class="post-actions">
-      <a href="/users">Cancelar</a>
+      <button onclick="goBack()">Cancelar</button>
     </div>
   </div>
+
+  <script>
+    // Función para volver a la página anterior
+    function goBack() {
+      window.history.back();
+    }
+
+    function editPost(postId) {
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const url_multimedia = document.getElementById('url_multimedia').value;
+
+      fetch(`/posts/${postId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, description, url_multimedia })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Publicación actualizada exitosamente.');
+            alert(data.redirectUrl)
+            window.location.href = data.redirectUrl; // Redirige a la URL anterior
+          } else {
+            alert(data.error || 'Error al actualizar la publicación.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+  </script>
 </body>
 
 </html>

@@ -2,16 +2,16 @@ var express = require('express');
 var router = express.Router();
 var postsController = require("../controllers/posts.c");
 
-/* POST crear pubicaciones */
+/* POST crear publicaciones */
 router.post('/', async (req, res) => {
   try {
     const result = await postsController.create(req.body);
     if (result.error) {
-      return res.status(400).render('error', { message: result.error });
+      return res.status(400).json({ success: false, error: result.error });
     }
-    return res.redirect('/users');
+    return res.json({ success: true });
   } catch (error) {
-    res.status(500).render('error', { message: "Error al crear la publicación" });
+    res.status(500).json({ success: false, error: "Error al crear la publicación" });
   }
 });
 
@@ -71,11 +71,15 @@ router.put('/:id', async (req, res) => {
   try {
     const result = await postsController.update(req.params.id, req.body);
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).json({ success: false, error: result.error });
     }
-    res.status(200).redirect("/users");
+
+    // Obtener la ruta anterior desde la cabecera Referer
+    const previousUrl = req.get('Referer') || '/'; // Ruta por defecto en caso de que Referer no esté definido
+
+    res.status(200).json({ success: true, redirectUrl: previousUrl });
   } catch (err) {
-    res.status(500).send(`Error al editar la publicación: ${err}`);
+    res.status(500).json({ success: false, error: `Error al editar la publicación: ${err}` });
   }
 });
 
@@ -84,11 +88,11 @@ router.delete('/:id', async (req, res) => {
   try {
     const result = await postsController.delete(req.params.id);
     if (result.error) {
-      return res.status(400).render('error', { message: result.error });
+      return res.status(400).json({ error: result.error });
     }
-    return res.redirect('/users');
+    return res.json({ success: true });
   } catch (err) {
-    res.status(500).send(`Error al eliminar la publicación: ${err}`);
+    res.status(500).json({ error: `Error al eliminar la publicación: ${err}` });
   }
 });
 

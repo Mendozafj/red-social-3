@@ -166,6 +166,30 @@ router.get('/:id/feed', async (req, res) => {
   }
 });
 
+/* GET perfil del usuario por id */
+router.get('/:id/profile', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await usersController.showByID(id);
+    if (!user) {
+      return res.status(404).send(`No se encontró el usuario con id: ${id}`);
+    }
+
+    // Obtener las publicaciones del usuario junto con los comentarios
+    const posts = await usersController.showPosts(id);
+    const postsWithComments = await Promise.all(
+      posts.map(async (post) => {
+        const comments = await commentsModel.showByPostID(post.id);
+        return { ...post, comments };
+      })
+    );
+
+    res.status(200).render('user_profile', { user, posts: postsWithComments });
+  } catch (err) {
+    res.status(500).send(`Error al cargar el perfil del usuario: ${err}`);
+  }
+});
+
 
 /* PUT editar usuario */
 router.put('/:id', async (req, res) => {
