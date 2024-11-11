@@ -22,17 +22,9 @@
                 <%= request.sender_username %>
               </strong></p>
             <div class="request-actions">
-              <!-- Formulario para aceptar la solicitud -->
-              <form action="/friend-request/<%= request.id %>?_method=PUT" method="POST" style="display:inline;">
-                <input type="hidden" id="status" name="status" value="aceptada"> <!-- Envía "aceptada" como estado -->
-                <button type="submit">Aceptar</button>
-              </form>
-              <!-- Formulario para rechazar la solicitud -->
-              <form action="/friend-request/<%= request.id %>?_method=PUT" method="POST" style="display:inline;">
-                <input type="hidden" id="status" name="status" value="rechazada"> <!-- Envía "rechazada" como estado -->
-                <button type="submit" class="delete-button">Rechazar</button>
-              </form>
-
+              <!-- Botones para aceptar o rechazar solicitud -->
+              <button class="accept-request edit-button" data-id="<%= request.id %>" data-status="aceptada">Aceptar</button>
+              <button class="reject-request delete-button" data-id="<%= request.id %>" data-status="rechazada">Rechazar</button>
             </div>
           </div>
           <% }); %>
@@ -43,9 +35,9 @@
 
     <!-- Formulario para enviar una nueva solicitud de amistad -->
     <h2>Enviar Nueva Solicitud de Amistad</h2>
-    <form action="/friend-request" method="POST">
-      <label for="receiverId">Selecciona un Usuario:</label>
-      <input type="hidden" name="sender_id" value="<%= user.id %>">
+    <form id="newRequestForm">
+      <label for="receiver_id">Selecciona un Usuario:</label>
+      <input type="hidden" id="sender_id" name="sender_id" value="<%= user.id %>">
       <select id="receiver_id" name="receiver_id" required>
         <option value="" disabled selected>Seleccione un usuario</option>
         <% users.forEach(u=> { %>
@@ -54,12 +46,86 @@
           </option>
           <% }); %>
       </select>
-
       <button type="submit">Enviar Solicitud</button>
     </form>
+
     <!-- Botón para volver atrás -->
     <button onclick="window.history.back();" style="margin-bottom: 20px;">Volver Atrás</button>
   </div>
+
+  <script>
+    // Función para manejar la creación de una nueva solicitud
+    document.getElementById('newRequestForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const sender_id = document.querySelector('input[name="sender_id"]').value;
+      const receiver_id = document.getElementById('receiver_id').value;
+
+      fetch('/friend-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sender_id, receiver_id })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Solicitud de amistad enviada.');
+            window.location.reload(); // Recargar la página
+          } else {
+            alert(data.error || 'Error al enviar la solicitud.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Función para manejar la aceptación de una solicitud
+    document.querySelectorAll('.accept-request').forEach(button => {
+      button.addEventListener('click', function () {
+        const requestId = this.getAttribute('data-id');
+        const status = this.getAttribute('data-status');
+
+        fetch(`/friend-request/${requestId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Solicitud de amistad aceptada.');
+              window.location.reload(); // Recargar la página
+            } else {
+              alert(data.error || 'Error al aceptar la solicitud.');
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      });
+    });
+
+    // Función para manejar el rechazo de una solicitud
+    document.querySelectorAll('.reject-request').forEach(button => {
+      button.addEventListener('click', function () {
+        const requestId = this.getAttribute('data-id');
+        const status = this.getAttribute('data-status');
+
+        fetch(`/friend-request/${requestId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Solicitud de amistad rechazada.');
+              window.location.reload(); // Recargar la página
+            } else {
+              alert(data.error || 'Error al rechazar la solicitud.');
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      });
+    });
+  </script>
 </body>
 
 </html>

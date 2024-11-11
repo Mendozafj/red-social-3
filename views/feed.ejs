@@ -9,8 +9,6 @@
 </head>
 
 <body>
-
-
   <div class="container">
     <header>
       <h1>Bienvenido, <%= user.name %> @<%= user.username %>
@@ -80,48 +78,6 @@
         <p class="no-posts">No hay publicaciones en el feed.</p>
         <% } %>
   </div>
-
-  <script>
-
-    // function logout() {
-    //   // Elimina el token del almacenamiento local
-    //   localStorage.removeItem('token');
-
-    //   // Opcionalmente, puedes hacer una solicitud al servidor para limpiar la sesión
-    //   fetch('/auth/logout', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'Authorization': `Bearer ${localStorage.getItem('token')}`
-    //     }
-    //   })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       if (data.success) {
-    //         // Redirige a la página de inicio de sesión u otra página
-    //         window.location.href = '/auth/login';
-    //       } else {
-    //         alert('Error al cerrar sesión.');
-    //       }
-    //     })
-    //     .catch(error => console.error('Error:', error));
-    // }
-    // function logout() {
-    //   fetch('/auth/logout')
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       if (data.success) {
-    //         window.location.href = data.redirect;  // Redirige después de recibir el JSON
-    //       } else {
-    //         console.error('Error al cerrar sesión:', data.error);
-    //       }
-    //     })
-    //     .catch(error => console.error('Error:', error));
-    // }
-
-
-  </script>
-
 </body>
 
 

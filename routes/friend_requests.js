@@ -3,19 +3,6 @@ var router = express.Router();
 var friendRequestController = require("../controllers/friend_request.c");
 const { verifyToken, verifyRole } = require("../middlewares/auth");
 
-router.post('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
-  try {
-    const result = await friendRequestController.create(req.body);
-    if (result.error) {
-      return res.status(400).render('error', { message: result.error });
-
-    }
-    return res.redirect('/users');
-  } catch (error) {
-    res.status(500).render('error', { message: "Error al crear la solicitud de amistad" });
-  }
-});
-
 /* GET mostrar solicitud de amistad */
 router.get('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
@@ -39,29 +26,48 @@ router.get('/:id', verifyToken, verifyRole(['usuario', 'admin']), async (req, re
   }
 });
 
-/* PUT editar solicitud de amistad */
-router.put('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
+// Ruta para crear una solicitud de amistad
+router.post('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
-    const result = await friendRequestController.update(req.params.id, req.body);
+    const result = await friendRequestController.create(req.body);
+
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).json({ success: false, error: result.error });
     }
-    res.status(200).redirect("/users");
+
+    res.status(200).json({ success: true });  // Solo indicar éxito, sin redirigir
   } catch (err) {
-    res.status(500).send(`Error al editar la solicitud de amistad: ${err}`);
+    res.status(500).json({ success: false, error: `Error al crear la solicitud: ${err}` });
   }
 });
 
-/* DELETE eliminar solicitud de amistad */
-router.delete('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
+// Ruta para editar una solicitud de amistad
+router.put('/:id', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
+  try {
+    const result = await friendRequestController.update(req.params.id, req.body);
+
+    if (result.error) {
+      return res.status(400).json({ success: false, error: result.error });
+    }
+
+    res.status(200).json({ success: true });  // Solo indicar éxito, sin redirigir
+  } catch (err) {
+    res.status(500).json({ success: false, error: `Error al editar la solicitud: ${err}` });
+  }
+});
+
+// Ruta para eliminar una solicitud de amistad
+router.delete('/:id', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const result = await friendRequestController.delete(req.params.id);
+
     if (result.error) {
-      return res.status(400).send(result.error);
+      return res.status(400).json({ success: false, error: result.error });
     }
-    res.status(200).send("Solicitud de amistad eliminada")
+
+    res.status(200).json({ success: true });  // Solo indicar éxito, sin redirigir
   } catch (err) {
-    res.status(500).send(`Error al eliminar la solicitud de amistad: ${err}`);
+    res.status(500).json({ success: false, error: `Error al eliminar la solicitud: ${err}` });
   }
 });
 
