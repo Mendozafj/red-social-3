@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var postsController = require("../controllers/posts.c");
+const { verifyToken, verifyRole } = require("../middlewares/auth");
 
 /* POST crear publicaciones */
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const result = await postsController.create(req.body);
     if (result.error) {
@@ -16,7 +17,7 @@ router.post('/', async (req, res) => {
 });
 
 /* GET mostrar pubicaciones. */
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const posts = await postsController.show();
     res.status(200).send(posts);
@@ -26,7 +27,7 @@ router.get('/', async (req, res) => {
 });
 
 /* GET mostrar publicación por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const post = await postsController.showByID(req.params.id);
     if (!post) {
@@ -39,7 +40,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* GET mostrar comentarios de una publicación por id */
-router.get('/:id/comments', async (req, res) => {
+router.get('/:id/comments', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   const { id } = req.params;
   try {
     const post = await postsController.showByID(id);
@@ -55,7 +56,7 @@ router.get('/:id/comments', async (req, res) => {
 });
 
 // Obtener la publicación para editar
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const id = req.params.id;
     const post = await postsController.showByID(id); // Método para obtener la publicación
@@ -67,7 +68,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 /* PUT editar publicación */
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const result = await postsController.update(req.params.id, req.body);
     if (result.error) {
@@ -83,17 +84,22 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-/* DELETE eliminar publicación */
-router.delete('/:id', async (req, res) => {
+// Ruta para eliminar la publicación
+router.delete('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
-    const result = await postsController.delete(req.params.id);
+    const result = await postsController.delete(req.params.id); // Método para eliminar la publicación
     if (result.error) {
-      return res.status(400).json({ error: result.error });
+      return res.status(400).json({ success: false, error: result.error });
     }
-    return res.json({ success: true });
+
+    // Obtener la ruta anterior desde la cabecera Referer
+    const previousUrl = req.get('Referer') || '/'; // Ruta por defecto en caso de que Referer no esté definido
+
+    res.status(200).json({ success: true, redirectUrl: previousUrl });
   } catch (err) {
-    res.status(500).json({ error: `Error al eliminar la publicación: ${err}` });
+    res.status(500).json({ success: false, error: `Error al eliminar la publicación: ${err}` });
   }
 });
+
 
 module.exports = router;

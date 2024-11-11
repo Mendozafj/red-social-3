@@ -2,22 +2,10 @@ var express = require('express');
 var router = express.Router();
 var usersController = require("../controllers/users.c");
 var commentsModel = require("../models/comments.m");
-
-/* POST registrar usuarios */
-router.post('/register', async (req, res) => {
-  try {
-    const result = await usersController.register(req.body);
-    if (result.error) {
-      return res.status(400).send(result.error);
-    }
-    return res.status(201).send("Usuario creado");
-  } catch (error) {
-    res.status(500).send("Error al registrar el usuario");
-  }
-});
+const { verifyToken, verifyRole } = require("../middlewares/auth");
 
 /* GET mostrar usuarios. */
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const users = await usersController.show();
     res.status(200).render('users', { users });  // Renderiza la vista 'users.ejs'
@@ -26,9 +14,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 /* GET mostrar usuario por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const user = await usersController.showByID(req.params.id);
     if (!user) {
@@ -41,7 +28,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* GET mostrar publicaciones de un usuario por id */
-router.get('/:id/posts', async (req, res) => {
+router.get('/:id/posts', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   const { id } = req.params;
   try {
     const user = await usersController.showByID(id);
@@ -81,9 +68,8 @@ router.get('/:id/posts', async (req, res) => {
 });
 
 
-
 /* GET mostrar usuario por username */
-router.get('/username/:username', async (req, res) => {
+router.get('/username/:username', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const user = await usersController.showByUsername(req.params.username);
     if (!user) {
@@ -96,7 +82,7 @@ router.get('/username/:username', async (req, res) => {
 });
 
 /* GET mostrar solicitudes de amistad de un usuario por id */
-router.get('/:id/friend-request', async (req, res) => {
+router.get('/:id/friend-request', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   const { id } = req.params;
   try {
     const user = await usersController.showByID(id);
@@ -133,7 +119,7 @@ router.get('/:id/friend-request', async (req, res) => {
 });
 
 /* GET mostrar amistades de un usuario por id */
-router.get('/:id/friends', async (req, res) => {
+router.get('/:id/friends', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   const { id } = req.params;
   try {
     const user = await usersController.showByID(id);
@@ -148,7 +134,7 @@ router.get('/:id/friends', async (req, res) => {
 });
 
 /* GET mostrar feed de publicaciones (incluyendo comentarios) */
-router.get('/:id/feed', async (req, res) => {
+router.get('/:id/feed', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   const { id } = req.params;
   try {
     const user = await usersController.showByID(id);
@@ -167,7 +153,7 @@ router.get('/:id/feed', async (req, res) => {
 });
 
 /* GET perfil del usuario por id */
-router.get('/:id/profile', async (req, res) => {
+router.get('/:id/profile', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   const { id } = req.params;
   try {
     const user = await usersController.showByID(id);

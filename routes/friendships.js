@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var friendshipController = require("../controllers/friendships.c");
+const { verifyToken, verifyRole } = require("../middlewares/auth");
 
 /* GET mostrar amistades */
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const friendships = await friendshipController.show();
     res.status(200).send(friendships);
@@ -13,7 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 /* GET mostrar amistad por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const friendship = await friendshipController.showByID(req.params.id);
     if (!friendship) {
@@ -26,7 +27,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* DELETE eliminar amistad */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const result = await friendshipController.delete(req.params.id);
     if (result.error) {

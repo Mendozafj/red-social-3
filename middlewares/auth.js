@@ -18,7 +18,13 @@ function verifyToken(req, res, next) {
 function verifyRole(allowedRoles) {
   return (req, res, next) => {
     if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).render('error', { message: "No tienes permiso para acceder a esta ruta." });
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        // Responde en formato JSON si la solicitud lo requiere
+        return res.status(403).json({ error: "No tienes permiso para acceder a esta ruta." });
+      } else {
+        // Responde con HTML en caso de solicitudes normales
+        return res.status(403).render('error', { message: "No tienes permiso para acceder a esta ruta." });
+      }
     }
     next();
   };

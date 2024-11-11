@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var commentsController = require("../controllers/comments.c");
+const { verifyToken, verifyRole } = require("../middlewares/auth");
 
 /* POST crear comentario */
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const result = await commentsController.create(req.body);
     if (result.error) {
@@ -16,7 +17,7 @@ router.post('/', async (req, res) => {
 });
 
 /* GET mostrar comentarios. */
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const comments = await commentsController.show();
     res.status(200).send(comments);
@@ -26,7 +27,7 @@ router.get('/', async (req, res) => {
 });
 
 /* GET mostrar comentario por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const comment = await commentsController.showByID(req.params.id);
     if (!comment) {
@@ -39,7 +40,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* PUT editar comentario */
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const result = await commentsController.update(req.params.id, req.body);
     if (result.error) {
@@ -52,7 +53,7 @@ router.put('/:id', async (req, res) => {
 });
 
 /* DELETE eliminar comentario */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const result = await commentsController.delete(req.params.id);
     if (result.error) {

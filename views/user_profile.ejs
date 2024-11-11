@@ -14,6 +14,8 @@
       <h1>Perfil de <%= user.name %> (@<%= user.username %>)</h1>
       <p>Email: <%= user.email %>
       </p>
+      <button onclick="window.location.href='/auth/logout'" class="delete-button">Cerrar sesión</button>
+
     </header>
 
     <h2>Publicaciones</h2>
@@ -151,7 +153,14 @@
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' }
         })
-          .then(response => response.json())
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else if (response.status === 403) {
+              alert("No tienes permiso para editar esta publicación.");
+            }
+            return response.json();  // En otros casos, devuelve el JSON de error
+          })
           .then(data => {
             if (data.success) {
               alert('Publicación eliminada exitosamente.');
@@ -164,6 +173,7 @@
       }
       closeDeleteModal();
     });
+
 
     // Función para abrir el modal de creación de publicación
     function openCreatePostModal() {
@@ -225,7 +235,15 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description, url_multimedia })
       })
-        .then(response => response.json())
+        .then(response => {
+          // Si la respuesta no es JSON (error 403 con HTML), muestra un mensaje de error
+          if (!response.ok) {
+            return response.json().catch(() => {
+              throw new Error("No tienes permiso para editar esta publicación.");
+            });
+          }
+          return response.json();
+        })
         .then(data => {
           if (data.success) {
             alert('Publicación actualizada exitosamente.');
@@ -234,11 +252,10 @@
             alert(data.error || 'Error al actualizar la publicación.');
           }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => alert(error.message));
     }
+
   </script>
-
-
 </body>
 
 </html>

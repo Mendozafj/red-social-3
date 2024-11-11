@@ -21,6 +21,7 @@
             <a href="/users/<%= user.id %>/profile">Ver perfil</a> |
             <a href="/users/<%= user.id %>/friends">Ver amigos</a> |
             <a href="/users/<%= user.id %>/friend-request">Ver solicitudes de amistad</a>
+            <button onclick="window.location.href='/auth/logout'" class="delete-button">Cerrar sesión</button>
           </li>
         </ul>
       </nav>
@@ -43,7 +44,7 @@
 
                 <!-- Nombre del usuario y fecha -->
                 <small>Publicado por <strong>
-                    <%= post.user_name %>
+                    <%= post.user_name %> @<%= post.user_username %>
                   </strong> el <%= post.formatted_date %></small>
 
                 <!-- Contenido de la publicación -->
@@ -59,7 +60,7 @@
                       <% post.comments.forEach(comment=> { %>
                         <li class="comment">
                           <small><strong>
-                              <%= comment.user_name %>
+                              <%= comment.user_name %> @<%= comment.user_username %> 
                             </strong> comentó el <%= comment.formatted_date %>:</small>
                           <p>
                             <%= comment.content %>
@@ -80,6 +81,48 @@
         <% } %>
   </div>
 
+  <script>
+
+    // function logout() {
+    //   // Elimina el token del almacenamiento local
+    //   localStorage.removeItem('token');
+
+    //   // Opcionalmente, puedes hacer una solicitud al servidor para limpiar la sesión
+    //   fetch('/auth/logout', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //     }
+    //   })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       if (data.success) {
+    //         // Redirige a la página de inicio de sesión u otra página
+    //         window.location.href = '/auth/login';
+    //       } else {
+    //         alert('Error al cerrar sesión.');
+    //       }
+    //     })
+    //     .catch(error => console.error('Error:', error));
+    // }
+    // function logout() {
+    //   fetch('/auth/logout')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       if (data.success) {
+    //         window.location.href = data.redirect;  // Redirige después de recibir el JSON
+    //       } else {
+    //         console.error('Error al cerrar sesión:', data.error);
+    //       }
+    //     })
+    //     .catch(error => console.error('Error:', error));
+    // }
+
+
+  </script>
+
 </body>
+
 
 </html>

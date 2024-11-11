@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var friendRequestController = require("../controllers/friend_request.c");
+const { verifyToken, verifyRole } = require("../middlewares/auth");
 
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const result = await friendRequestController.create(req.body);
     if (result.error) {
@@ -15,21 +16,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
-  try {
-    const result = await postsController.create(req.body);
-    if (result.error) {
-      return res.status(400).render('error', { message: result.error });
-    }
-    return res.redirect('/users');
-  } catch (error) {
-    res.status(500).render('error', { message: "Error al crear la publicación" });
-  }
-});
-
-
 /* GET mostrar solicitud de amistad */
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const friendRequest = await friendRequestController.show();
     res.status(200).send(friendRequest);
@@ -39,7 +27,7 @@ router.get('/', async (req, res) => {
 });
 
 /* GET mostrar solicitud de amistad por id */
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyToken, verifyRole(['usuario', 'admin']), async (req, res) => {
   try {
     const friendRequest = await friendRequestController.showByID(req.params.id);
     if (!friendRequest) {
@@ -52,7 +40,7 @@ router.get('/:id', async (req, res) => {
 });
 
 /* PUT editar solicitud de amistad */
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const result = await friendRequestController.update(req.params.id, req.body);
     if (result.error) {
@@ -65,7 +53,7 @@ router.put('/:id', async (req, res) => {
 });
 
 /* DELETE eliminar solicitud de amistad */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, verifyRole(['admin']), async (req, res) => {
   try {
     const result = await friendRequestController.delete(req.params.id);
     if (result.error) {
