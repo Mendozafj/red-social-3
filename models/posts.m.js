@@ -6,8 +6,8 @@ class PostsModel {
   async create(post) {
     return new Promise((resolve, reject) => {
       const id = uuidv4(); // Generar un nuevo ID
-      const query = 'INSERT INTO posts (id, title, description, url_multimedia, user_id) VALUES (?, ?, ?, ?, ?)';
-      const values = [id, post.title, post.description, post.url_multimedia, post.user_id];
+      const query = 'INSERT INTO posts (id, title, description, url_multimedia, user_id, created_at) VALUES (?, ?, ?, ?, ?, ?)';
+      const values = [id, post.title, post.description, post.url_multimedia, post.user_id, new Date()];
 
       pool.query(query, values)
         .then(() => resolve({ id, ...post })) // Retorna el nuevo post con el ID asignado

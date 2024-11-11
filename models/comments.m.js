@@ -6,8 +6,8 @@ class CommentsModel {
   async create(comment) {
     return new Promise((resolve, reject) => {
       comment.id = uuidv4(); // Genera un nuevo ID
-      const query = 'INSERT INTO comments (id, content, post_id, user_id) VALUES (?, ?, ?, ?)';
-      const values = [comment.id, comment.content, comment.post_id, comment.user_id];
+      const query = 'INSERT INTO comments (id, content, post_id, user_id, created_at) VALUES (?, ?, ?, ?, ?)';
+      const values = [comment.id, comment.content, comment.post_id, comment.user_id, new Date()];
 
       pool.query(query, values)
         .then(([result]) => resolve({ id: comment.id, ...comment }))

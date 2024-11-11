@@ -1,0 +1,198 @@
+<!-- <!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed de <%= user.user_name %>
+  </title>
+</head>
+
+<body>
+  <header>
+    <h1>Bienvenido, <%= user.user_name %>
+    </h1>
+    <nav>
+      <a href="/users/<%= user.id %>">Ver perfil</a>
+      <a href="/users/<%= user.id %>/friend-request">Ver solicitudes de amistad</a>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Feed de Publicaciones</h2>
+
+    <% feed.forEach(post=> { %>
+      <div class="post">
+        <h3>
+          <%= post.title %>
+        </h3>
+        <p>Publicado por: <%= post.user_name %>
+        </p>
+        <p>
+          <%= post.description %>
+        </p>
+        <p>Fecha de publicación: <%= post.formatted_date %>
+        </p>
+
+        <% if (post.comments.length> 0) { %>
+          <h4>Comentarios:</h4>
+          <ul>
+            <% post.comments.forEach(comment=> { %>
+              <li>
+                <p>
+                  <%= comment.content %>
+                </p>
+                <p>
+                  <%= comment.user_name %>
+                </p>
+                <p>
+                  <%= comment.formatted_date %>
+                </p>
+
+              </li>
+              <% }) %>
+          </ul>
+          <% } else { %>
+            <p>No hay comentarios en esta publicación.</p>
+            <% } %>
+      </div>
+      <% }) %>
+
+  </section>
+</body>
+
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <title>Feed de <%= user.user_name %></title>
+</head>
+
+<body>
+  <header>
+    <h1>Bienvenido, <%= user.name %> @<%= user.user_name %></h1>
+    <nav>
+      <a href="/users/<%= user.id %>">Ver perfil</a>
+      <a href="/users/<%= user.id %>/friend-request">Ver solicitudes de amistad</a>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Feed de Publicaciones</h2>
+
+    <% if (feed.length === 0) { %>
+      <p>No tienes publicaciones o no sigues a nadie todavía.</p>
+    <% } else { %>
+      <% feed.forEach(post => { %>
+        <div class="post">
+          <h3><%= post.title %></h3>
+          <p>Publicado por: <%= post.user_name %> @<%= post.user_user_name %></p>
+          <p><%= post.description %></p>
+          <p>Fecha de publicación: <%= post.formatted_date %></p>
+
+          <% if (post.comments && post.comments.length > 0) { %>
+            <h4>Comentarios:</h4>
+            <ul>
+              <% post.comments.forEach(comment => { %>
+                <li>
+                  <p>Comentado por: <%= comment.user_name %> @<%= comment.user_user_name %></p>
+                  <p><%= comment.content %></p>
+                  <p>Fecha del comentario: <%= comment.formatted_date %></p>
+                </li>
+              <% }) %>
+            </ul>
+          <% } else { %>
+            <p>No hay comentarios en esta publicación.</p>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </section>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed de Publicaciones</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+
+
+  <div class="container">
+    <header>
+      <h1>Bienvenido, <%= user.name %> @<%= user.username %>
+      </h1>
+      <nav>
+        <a href="/users/<%= user.id %>">Ver perfil</a>
+        <a href="/users/<%= user.id %>/friend-request">Ver solicitudes de amistad</a>
+      </nav>
+    </header>
+    <h1>Feed de Publicaciones</h1>
+
+    <% if (feed && feed.length> 0) { %>
+      <ul>
+        <% feed.forEach(post=> { %>
+          <li class="post">
+            <!-- Imagen de la publicación -->
+            <% if (post.url_multimedia) { %>
+              <img src="<%= post.url_multimedia %>" alt="Imagen de la publicación" class="post-image">
+              <% } %>
+
+                <!-- Título de la publicación -->
+                <h2>
+                  <%= post.title %>
+                </h2>
+
+                <!-- Nombre del usuario y fecha -->
+                <small>Publicado por <strong>
+                    <%= post.user_name %>
+                  </strong> el <%= post.formatted_date %></small>
+
+                <!-- Contenido de la publicación -->
+                <p>
+                  <%= post.description %>
+                </p>
+
+                <!-- Comentarios -->
+                <div class="comments">
+                  <h3>Comentarios</h3>
+                  <% if (post.comments && post.comments.length> 0) { %>
+                    <ul>
+                      <% post.comments.forEach(comment=> { %>
+                        <li class="comment">
+                          <small><strong>
+                              <%= comment.user_name %>
+                            </strong> comentó el <%= comment.formatted_date %>:</small>
+                          <p>
+                            <%= comment.content %>
+                          </p>
+                        </li>
+                        <% }) %>
+                    </ul>
+                    <% } else { %>
+                      <p class="no-comments">No hay comentarios en esta publicación.</p>
+                      <% } %>
+                </div>
+
+          </li>
+          <% }) %>
+      </ul>
+      <% } else { %>
+        <p class="no-posts">No hay publicaciones en el feed.</p>
+        <% } %>
+  </div>
+
+</body>
+
+</html>

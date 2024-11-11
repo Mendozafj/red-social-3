@@ -5,13 +5,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var methodOverride = require('method-override');
 
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
 var commentsRouter = require('./routes/comments');
 var friendRequestsRouter = require('./routes/friend_requests');
 var friendshipRouter = require('./routes/friendships');
+var authRoutes = require('./routes/auth');
 
 var app = express();
 require('dotenv').config();
@@ -34,6 +34,7 @@ app.use('/posts', postsRouter);
 app.use('/comments', commentsRouter);
 app.use('/friend-request', friendRequestsRouter);
 app.use('/friendships', friendshipRouter);
+app.use('/auth', authRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

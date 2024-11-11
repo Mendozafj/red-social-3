@@ -4,7 +4,7 @@ var usersController = require("../controllers/users.c");
 var commentsModel = require("../models/comments.m");
 
 /* POST registrar usuarios */
-router.post('/', async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const result = await usersController.register(req.body);
     if (result.error) {
@@ -147,7 +147,7 @@ router.get('/:id/friends', async (req, res) => {
   }
 });
 
-/* GET mostrar feed de publicaciones (mostrando la última publicación de cada usuario "amigo") */
+/* GET mostrar feed de publicaciones (incluyendo comentarios) */
 router.get('/:id/feed', async (req, res) => {
   const { id } = req.params;
   try {
@@ -155,11 +155,14 @@ router.get('/:id/feed', async (req, res) => {
     if (!user) {
       return res.status(404).send(`No se encontró el usuario con id: ${req.params.id}`);
     }
+
+    // Obtener las publicaciones de amigos (o cualquier otra lógica para el feed)
     const feed = await usersController.showFeed(id);
 
-    res.status(200).send(feed);
+    // Renderiza el feed en la vista 'user_feed.ejs' pasando las publicaciones con comentarios
+    res.status(200).render('feed', { user, feed: feed });
   } catch (err) {
-    res.status(500).send(`Error el feed del usuario: ${err}`);
+    res.status(500).send(`Error al cargar el feed del usuario: ${err}`);
   }
 });
 

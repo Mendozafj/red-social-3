@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('friend_request', {
+    await queryInterface.createTable('friend_requests', {
       id: {
         type: Sequelize.CHAR(36),
         allowNull: false,
@@ -23,12 +23,13 @@ module.exports = {
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: true,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
       }
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('friend_request');
+    await queryInterface.dropTable('friend_requests');
   },
 };

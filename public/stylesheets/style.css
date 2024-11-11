@@ -19,12 +19,14 @@ body {
 
 /* Títulos */
 h1, h2 {
-  color: #374151; /* Gris oscuro */
+  color: #374151;
+  /* Gris oscuro */
   text-align: center;
 }
 
 h2 {
-  color: #3b82f6; /* Azul medio */
+  color: #3b82f6;
+  /* Azul medio */
   font-size: 1.5rem;
   margin-bottom: 15px;
 }
@@ -46,12 +48,14 @@ li {
 }
 
 li:hover {
-  background-color: #e7f1ff; /* Azul claro al hacer hover */
+  background-color: #e7f1ff;
+  /* Azul claro al hacer hover */
 }
 
 /* Enlaces */
 a {
-  color: #3b82f6; /* Azul medio */
+  color: #3b82f6;
+  /* Azul medio */
   text-decoration: none;
 }
 
@@ -101,7 +105,7 @@ label {
   margin-top: 10px;
 }
 
-input[type="text"],
+input[type="text"], input[type="email"], input[type="password"],
 textarea,
 select {
   padding: 8px;
@@ -133,7 +137,8 @@ button[type="submit"] {
 .post-actions {
   display: flex;
   align-items: center;
-  gap: 8px; /* Espacio entre los elementos */
+  gap: 8px;
+  /* Espacio entre los elementos */
   margin-top: 15px;
 }
 
@@ -148,7 +153,8 @@ button[type="submit"] {
 }
 
 button {
-  background-color: #3b82f6; /* Color para el botón de editar */
+  background-color: #3b82f6;
+  /* Color para el botón de editar */
 }
 
 button:hover {
@@ -156,7 +162,8 @@ button:hover {
 }
 
 .delete-button {
-  background-color: #d0342d; /* Color para el botón de eliminar */
+  background-color: #d0342d;
+  /* Color para el botón de eliminar */
 }
 
 .delete-button:hover {
@@ -216,4 +223,43 @@ button[onclick="window.history.back();"]:hover {
 /* Lista de Usuarios */
 .user-list a {
   font-weight: bold;
+}
+
+/* Estilos adicionales para los formularios */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+button[type="submit"] {
+  background-color: #3b82f6;
+  /* Azul */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button[type="submit"]:hover {
+  background-color: #2563eb;
+}
+
+.post-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  /* Esto centra la imagen horizontalmente */
+  border-radius: 5px;
 }

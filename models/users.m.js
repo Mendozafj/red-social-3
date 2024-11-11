@@ -6,8 +6,8 @@ class UsersModel {
   async register(user) {
     return new Promise((resolve, reject) => {
       user.id = uuidv4(); // Genera un UUID para el nuevo usuario
-      const query = 'INSERT INTO users (id, username, name, email, password, created_at) VALUES (?, ?, ?, ?, ?, ?)';
-      const values = [user.id, user.username, user.name, user.email, user.password, new Date()];
+      const query = 'INSERT INTO users (id, username, name, email, password, role, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)';
+      const values = [user.id, user.username, user.name, user.email, user.password, user.role, new Date()];
 
       pool.query(query, values)
         .then(([result]) => resolve(result.insertId))

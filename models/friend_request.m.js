@@ -6,8 +6,8 @@ class FriendRequestsModel {
   async create(friendRequest) {
     return new Promise((resolve, reject) => {
       friendRequest.id = uuidv4(); 
-      const query = 'INSERT INTO friend_requests (id, sender_id, receiver_id, status) VALUES (?, ?, ?, ?)';
-      const values = [friendRequest.id, friendRequest.sender_id, friendRequest.receiver_id, friendRequest.status];
+      const query = 'INSERT INTO friend_requests (id, sender_id, receiver_id, status, created_at) VALUES (?, ?, ?, ?, ?)';
+      const values = [friendRequest.id, friendRequest.sender_id, friendRequest.receiver_id, friendRequest.status, new Date()];
 
       pool.query(query, values)
         .then(([result]) => resolve({ id: friendRequest.id, ...friendRequest }))
